@@ -2,6 +2,7 @@ const slugify = require("slugify");
 
 //importing the category model
 const User = require("../../models/user");
+const { userWeight } = require("../../utils/utils");
 
 const MODEL_NAME = "Users";
 
@@ -81,4 +82,36 @@ const getAllUsers = async (req, res) => {
   }
 };
 
-module.exports = { getAllUsers };
+const editUserDetails = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const { role } = req.body;
+
+    let reqObj = {
+      ...req.body,
+    };
+
+    if (role) {
+      reqObj.user_weight = userWeight[role] ? userWeight[role] : 2;
+    }
+
+    await User.findByIdAndUpdate(id, reqObj, { new: true })
+      .then((userData) => {
+        return res.status(200).json({
+          status: 200,
+          message: "User Updated successfully",
+          data: userData,
+        });
+      })
+      .catch((err) => {
+        console.log(err);
+        return res.status(422).json({ message: err });
+      });
+  } catch (error) {
+    console.error(`Error fetching ${MODEL_NAME}:`, error);
+    return res.status(500).json({ meassge: `Error fetching ${MODEL_NAME}` });
+  }
+};
+
+module.exports = { getAllUsers, editUserDetails };
