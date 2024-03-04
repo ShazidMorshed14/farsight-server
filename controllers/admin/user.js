@@ -86,11 +86,22 @@ const editUserDetails = async (req, res) => {
   try {
     const { id } = req.params;
 
-    const { role } = req.body;
+    const { role, email, phone } = req.body;
 
     let reqObj = {
       ...req.body,
     };
+
+    const checkUser = await User.findOne({
+      $or: [{ email: email }, { phone: phone }],
+    });
+    if (checkUser) {
+      return res.status(422).json({
+        status: 422,
+        message: "User already exists with this email or phone",
+        data: userData,
+      });
+    }
 
     if (role) {
       reqObj.user_weight = userWeight[role] ? userWeight[role] : 2;
