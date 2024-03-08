@@ -34,5 +34,11 @@ router.put(
   isCategoryRequestValidated,
   categoryControllers.editCategory
 );
+router.delete(
+  "/delete/:id",
+  isAuth,
+  isAdmin,
+  categoryControllers.deleteCategory
+);
 
 module.exports = router;

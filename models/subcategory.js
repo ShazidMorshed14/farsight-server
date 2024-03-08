@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const { ObjectId } = mongoose.Schema.Types;
 
-const categorySchema = new mongoose.Schema(
+const SubcategorySchema = new mongoose.Schema(
   {
     name: {
       type: String,
@@ -12,10 +12,14 @@ const categorySchema = new mongoose.Schema(
       type: String,
       required: true,
       unique: true,
+    },
+    subCategoryImage: { type: String },
+    subCategoryAppImage: { type: String },
+    categoryId: {
+      type: ObjectId,
+      ref: "Category",
       required: true,
     },
-    categoryImage: { type: String, default: null },
-    categoryAppImage: { type: String, default: null },
     createdBy: {
       type: ObjectId,
       ref: "User",
@@ -25,4 +29,4 @@ const categorySchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-module.exports = mongoose.model("Category", categorySchema);
+module.exports = mongoose.model("Subcategory", SubcategorySchema);

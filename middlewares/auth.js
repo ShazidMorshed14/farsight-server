@@ -38,7 +38,6 @@ const isAuth = (req, res, next) => {
 };
 
 const isAdmin = (req, res, next) => {
-  console.log(req?.user);
   if (req?.user?.role === "admin" || req?.user?.role === "super_admin") {
     return next();
   } else {
@@ -46,4 +45,12 @@ const isAdmin = (req, res, next) => {
   }
 };
 
-module.exports = { isAuth, isAdmin };
+const isVendor = (req, res, next) => {
+  if (req?.user?.role === "vendor") {
+    return next();
+  } else {
+    return res.status(409).json({ message: "Access Denied" });
+  }
+};
+
+module.exports = { isAuth, isAdmin, isVendor };

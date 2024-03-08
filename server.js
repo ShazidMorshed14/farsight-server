@@ -33,6 +33,9 @@ const connecDB = require("./db/connect");
 const adminAuthRoutes = require("./routes/admin/auth");
 const adminUserRoutes = require("./routes/admin/users");
 
+//vendor routes
+const vendorAuthRoutes = require("./routes/vendor/auth");
+
 //other routes
 const authRoutes = require("./routes/auth");
 const categoryRoutes = require("./routes/category");
@@ -49,6 +52,7 @@ app.use("/api/v1/customer/auth", authRoutes);
 app.use("/api/v1/category", categoryRoutes);
 app.use("/api/v1/product", productRoutes);
 app.use("/api/v1/user/cart", cartRoutes);
+app.use("/api/v1/vendor/auth", vendorAuthRoutes);
 
 app.post(
   "/api/v1/files/upload",

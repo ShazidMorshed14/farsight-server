@@ -10,10 +10,8 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
-const uploadImagesToCloudinary = async (req, res, limit, dimesion) => {
+const uploadImagesToCloudinary = async (files, res, limit, dimesion) => {
   try {
-    const { files } = req;
-
     let imageQuantity = limit ? limit : 5;
     let imageDimension = dimesion ? dimesion : 300;
 
