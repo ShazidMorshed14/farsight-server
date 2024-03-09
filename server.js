@@ -39,6 +39,7 @@ const vendorAuthRoutes = require("./routes/vendor/auth");
 //other routes
 const authRoutes = require("./routes/auth");
 const categoryRoutes = require("./routes/category");
+const SubCategoryRoutes = require("./routes/subcategory");
 const productRoutes = require("./routes/product");
 const cartRoutes = require("./routes/cart");
 
@@ -50,6 +51,7 @@ app.use("/api/v1/admin/auth", adminAuthRoutes);
 app.use("/api/v1/admin/users", adminUserRoutes);
 app.use("/api/v1/customer/auth", authRoutes);
 app.use("/api/v1/category", categoryRoutes);
+app.use("/api/v1/subcategory", SubCategoryRoutes);
 app.use("/api/v1/product", productRoutes);
 app.use("/api/v1/user/cart", cartRoutes);
 app.use("/api/v1/vendor/auth", vendorAuthRoutes);

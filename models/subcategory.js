@@ -15,11 +15,7 @@ const SubcategorySchema = new mongoose.Schema(
     },
     subCategoryImage: { type: String },
     subCategoryAppImage: { type: String },
-    categoryId: {
-      type: ObjectId,
-      ref: "Category",
-      required: true,
-    },
+    categories: [{ type: ObjectId, ref: "Category" }],
     createdBy: {
       type: ObjectId,
       ref: "User",
