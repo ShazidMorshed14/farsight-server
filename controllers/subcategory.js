@@ -153,6 +153,8 @@ const editSubCategory = async (req, res) => {
 
     const { name, categories } = req.body;
 
+    console.log(name);
+
     let subCategoryObj = {
       createdBy: req.user._id,
     };
@@ -248,6 +250,13 @@ const editSubCategory = async (req, res) => {
           });
         }
       }
+    }
+
+    if (categories) {
+      let createdCategoryList = [...selectedSubCategory.categories];
+      createdCategoryList.push(categories);
+
+      subCategoryObj.categories = createdCategoryList;
     }
 
     await Subcategory.findByIdAndUpdate(id, subCategoryObj, { new: true })
