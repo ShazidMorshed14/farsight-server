@@ -40,5 +40,11 @@ router.delete(
   isAdmin,
   SubCategoryControllers.deleteSubCategory
 );
+router.post(
+  "/remove-category-from-subcategory",
+  isAuth,
+  isAdmin,
+  SubCategoryControllers.removeCategoryFromSubCategory
+);
 
 module.exports = router;

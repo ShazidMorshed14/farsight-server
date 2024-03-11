@@ -153,8 +153,6 @@ const editSubCategory = async (req, res) => {
 
     const { name, categories } = req.body;
 
-    console.log(name);
-
     let subCategoryObj = {
       createdBy: req.user._id,
     };
@@ -303,9 +301,40 @@ const deleteSubCategory = async (req, res) => {
   }
 };
 
+const removeCategoryFromSubCategory = async (req, res) => {
+  try {
+    const { subCategoryId, categoryId } = req.body;
+
+    const subCatDetails = await Subcategory.find({ _id: subCategoryId });
+    console.log(subCatDetails);
+
+    await Subcategory.findByIdAndUpdate(
+      subCategoryId,
+      {
+        $pull: { categories: categoryId },
+      },
+      { new: true }
+    )
+      .then((SubCategoryData) => {
+        return res.status(200).json({
+          status: 200,
+          message: "Sub-Category Updated successfully",
+          data: SubCategoryData,
+        });
+      })
+      .catch((err) => {
+        console.log(err);
+        return res.status(422).json({ message: err });
+      });
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 module.exports = {
   createSubCategory,
   getAllSubCategory,
   editSubCategory,
   deleteSubCategory,
+  removeCategoryFromSubCategory,
 };
