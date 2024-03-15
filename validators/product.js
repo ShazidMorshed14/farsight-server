@@ -3,6 +3,7 @@ const { check, validationResult } = require("express-validator");
 exports.validateProductCreate = [
   check("name").notEmpty().withMessage("product name is required"),
   check("price").notEmpty().withMessage("product price is required"),
+  check("quantity").notEmpty().withMessage("quantity is required"),
   check("description")
     .notEmpty()
     .withMessage("product description is required"),

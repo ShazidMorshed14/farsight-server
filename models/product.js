@@ -25,82 +25,35 @@ const productSchema = new mongoose.Schema(
     description: {
       type: String,
     },
-    keyFeatures: {
-      type: String,
+    shape: {
+      type: ObjectId,
+      ref: "Shape",
+      required: true,
     },
-    specification: {
-      type: String,
-    },
-    inStock: {
+    colors: [
+      {
+        add_amount: { type: Number, default: 0 },
+        color_details: {
+          type: ObjectId,
+          ref: "Color",
+        },
+        color_quantity: { type: Number, default: 0 },
+      },
+    ],
+    supportedPowers: [
+      {
+        add_amount: { type: Number, default: 0 },
+        shape_details: {
+          type: ObjectId,
+          ref: "Power",
+        },
+      },
+    ],
+    quantity: {
       type: Number,
       required: true,
       default: 0,
     },
-    hasVariants: {
-      type: Boolean,
-      required: true,
-      default: false,
-    },
-    colorVariants: [
-      {
-        variant_code: { type: String, required: true },
-        variant_type: {
-          type: String,
-          enum: ["color", "size", "feature", "other"],
-          required: true,
-        },
-        label: { type: String, required: true },
-        value: { type: String, required: true },
-        add_amount: { type: Number, required: true, default: 0 },
-        variant_quantity: { type: Number, required: true, default: 0 },
-      },
-    ],
-    size_type: {
-      type: String,
-      default: "US",
-    },
-    sizeVariants: [
-      {
-        variant_code: { type: String, required: true },
-        variant_type: {
-          type: String,
-          enum: ["color", "size", "feature", "other"],
-          required: true,
-        },
-        label: { type: String, required: true },
-        value: { type: String, required: true },
-        add_amount: { type: Number, required: true, default: 0 },
-        variant_quantity: { type: Number, required: true, default: 0 },
-      },
-    ],
-    featureVariants: [
-      {
-        variant_code: { type: String, required: true },
-        variant_type: {
-          type: String,
-          enum: ["color", "size", "feature", "other"],
-          required: true,
-        },
-        label: { type: String, required: true },
-        value: { type: String, required: true },
-        add_amount: { type: Number, required: true, default: 0 },
-        variant_quantity: { type: Number, required: true, default: 0 },
-      },
-    ],
-    otherVariants: [
-      {
-        variant_code: { type: String, required: true },
-        variant_type: {
-          type: String,
-          enum: ["color", "size", "feature", "other"],
-          required: true,
-        },
-        label: { type: String, required: true },
-        value: { type: String, required: true },
-        add_amount: { type: Number, required: true, default: 0 },
-        variant_quantity: { type: Number, required: true, default: 0 },
-      },
-    ],
     promo_code: {
       type: String,
     },
@@ -117,16 +70,18 @@ const productSchema = new mongoose.Schema(
         review: String,
       },
     ],
-    category: {
-      type: ObjectId,
-      ref: "Category",
-      required: true,
-    },
-    createdBy: {
-      type: ObjectId,
-      ref: "User",
-      required: true,
-    },
+    categories: [
+      {
+        type: ObjectId,
+        ref: "Category",
+      },
+    ],
+    subCategories: [
+      {
+        type: ObjectId,
+        ref: "Subcategory",
+      },
+    ],
     offer_type: {
       type: String,
       required: true,
@@ -134,23 +89,6 @@ const productSchema = new mongoose.Schema(
       default: "default",
     },
     discount_amount: {
-      type: Number,
-      default: 0,
-    },
-    outSideRegionAllowed: {
-      type: Boolean,
-      required: true,
-      default: false,
-    },
-    insideDeliveryCharge: {
-      type: Number,
-      default: 0,
-    },
-    outsideDeliveryCharge: {
-      type: Number,
-      default: 0,
-    },
-    defaultDeliveryCharge: {
       type: Number,
       default: 0,
     },
@@ -163,6 +101,11 @@ const productSchema = new mongoose.Schema(
     isFeatured: {
       type: Boolean,
       default: false,
+    },
+    createdBy: {
+      type: ObjectId,
+      ref: "User",
+      required: true,
     },
   },
   { timestamps: true }

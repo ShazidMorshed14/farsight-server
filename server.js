@@ -42,6 +42,9 @@ const categoryRoutes = require("./routes/category");
 const SubCategoryRoutes = require("./routes/subcategory");
 const productRoutes = require("./routes/product");
 const cartRoutes = require("./routes/cart");
+const powerRoutes = require("./routes/power");
+const colorRoutes = require("./routes/color");
+const shapeRoutes = require("./routes/shape");
 
 //importing the file upload controller
 const fileUploader = require("./controllers/file-upload");
@@ -55,6 +58,9 @@ app.use("/api/v1/subcategory", SubCategoryRoutes);
 app.use("/api/v1/product", productRoutes);
 app.use("/api/v1/user/cart", cartRoutes);
 app.use("/api/v1/vendor/auth", vendorAuthRoutes);
+app.use("/api/v1/power", powerRoutes);
+app.use("/api/v1/color", colorRoutes);
+app.use("/api/v1/shape", shapeRoutes);
 
 app.post(
   "/api/v1/files/upload",

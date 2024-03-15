@@ -41,7 +41,23 @@ const getAllProduct = async (req, res) => {
             select: "_id name role",
           },
           {
-            path: "category",
+            path: "categories",
+            select: "_id name",
+          },
+          {
+            path: "subcategories",
+            select: "_id name",
+          },
+          {
+            path: "colors",
+            select: "_id name value",
+          },
+          {
+            path: "shape",
+            select: "_id name ",
+          },
+          {
+            path: "reviews",
           },
         ])
         .sort({ _id: -1 });
@@ -69,7 +85,19 @@ const getAllProduct = async (req, res) => {
             select: "_id name role",
           },
           {
-            path: "category",
+            path: "categories",
+          },
+          {
+            path: "subcategories",
+          },
+          {
+            path: "colors",
+          },
+          {
+            path: "shape",
+          },
+          {
+            path: "reviews",
           },
         ])
         .sort({ _id: -1 })
@@ -97,23 +125,17 @@ const createProduct = async (req, res) => {
   try {
     const {
       name,
+      quantity,
       price,
-      description,
-      category,
-      inStock,
-      hasVariants,
-      colorVariants,
-      size_type,
-      sizeVariants,
-      featureVariants,
-      otherVariants,
-      promo_code,
-      offer_type,
       discount_amount,
-      outSideRegionAllowed,
-      insideDeliveryCharge,
-      outsideDeliveryCharge,
-      defaultDeliveryCharge,
+      description,
+      productPictures,
+      categories,
+      subCategories,
+      shape,
+      colors,
+      supportedPowers,
+      offer_type,
       status,
       isFeatured,
     } = req.body;
@@ -122,24 +144,18 @@ const createProduct = async (req, res) => {
       name: name,
       slug: slugify(name),
       sku: `${slugify(name)}-${generateUniqueCode()}`,
+      quantity: quantity ? quantity : 0,
       price: price ? price : 0,
-      description: description ? description : null,
-      category: category,
-      createdBy: req.user._id,
-      inStock: inStock ? inStock : 0,
-      hasVariants: hasVariants ? hasVariants : false,
-      colorVariants: colorVariants ? colorVariants : [],
-      size_type: size_type ? size_type : "US",
-      sizeVariants: sizeVariants ? sizeVariants : [],
-      featureVariants: featureVariants ? featureVariants : [],
-      otherVariants: otherVariants ? otherVariants : [],
-      promo_code: promo_code ? promo_code : null,
-      offer_type: offer_type ? offer_type : "default",
       discount_amount: discount_amount ? discount_amount : 0,
-      outSideRegionAllowed: outSideRegionAllowed ? outSideRegionAllowed : false,
-      insideDeliveryCharge: insideDeliveryCharge ? insideDeliveryCharge : 0,
-      outsideDeliveryCharge: outsideDeliveryCharge ? outsideDeliveryCharge : 0,
-      defaultDeliveryCharge: defaultDeliveryCharge ? defaultDeliveryCharge : 0,
+      description: description ? description : null,
+      productPictures: productPictures ? productPictures : [],
+      categories: categories ? categories : [],
+      subCategories: subCategories ? subCategories : [],
+      shape: shape ? shape : null,
+      colors: colors ? colors : [],
+      supportedPowers: supportedPowers ? supportedPowers : [],
+      offer_type: offer_type ? offer_type : "default",
+      createdBy: req.user._id,
       status: status ? status : "active",
       isFeatured: isFeatured ? isFeatured : false,
     };
@@ -153,11 +169,13 @@ const createProduct = async (req, res) => {
         data: null,
       });
 
+    const files = isArrayAndHasContent(req?.files) ? req?.files : [];
+
     const productPicturesResponse = await uploadImagesToCloudinary(
-      req,
+      files,
       res,
       5,
-      300
+      null
     );
 
     if (productPicturesResponse.status == 200) {
