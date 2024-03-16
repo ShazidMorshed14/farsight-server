@@ -2,7 +2,7 @@ const slugify = require("slugify");
 
 //importing the category model
 const Product = require("../models/product");
-const { generateUniqueCode } = require("../utils/utils");
+const { generateUniqueCode, isArrayAndHasContent } = require("../utils/utils");
 const { uploadImagesToCloudinary } = require("../utils/file-upload-helper");
 
 const MODEL_NAME = "Product";
@@ -88,7 +88,7 @@ const getAllProduct = async (req, res) => {
             path: "categories",
           },
           {
-            path: "subcategories",
+            path: "subCategories",
           },
           {
             path: "colors",
@@ -214,4 +214,79 @@ const createProduct = async (req, res) => {
   }
 };
 
-module.exports = { getAllProduct, createProduct };
+const editProduct = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const { name } = req.body;
+
+    let productObj = {
+      ...req.body,
+    };
+
+    const selectedProduct = await Product.findOne({ _id: id });
+
+    //check if the category actually exists or not
+    if (!selectedProduct) {
+      return res.status(404).json({ message: "Product Doesn't Exists!" });
+    }
+
+    if (name) {
+      if (selectedProduct?.name !== name) {
+        const checkProduct = await Product.findOne({ name: name });
+
+        if (checkProduct) {
+          return res
+            .status(409)
+            .json({ message: "Same Product Already Exists!" });
+        }
+
+        productObj.name = name;
+        productObj.slug = `${slugify(name)}-${generateUniqueCode()}`;
+      }
+    }
+
+    const files = isArrayAndHasContent(req?.files) ? req?.files : [];
+    if (isArrayAndHasContent(files)) {
+      const productPicturesResponse = await uploadImagesToCloudinary(
+        files,
+        res,
+        5,
+        null
+      );
+
+      if (productPicturesResponse.status == 200) {
+        productObj.productPictures = productPicturesResponse.data;
+      } else if (productPicturesResponse.status == 409) {
+        return res.status(409).json({
+          status: 409,
+          message: productPicturesResponse.message,
+          data: null,
+        });
+      } else {
+        return res.status(productPicturesResponse.status || 500).json({
+          status: productPicturesResponse.status,
+          message: productPicturesResponse.message,
+          data: null,
+        });
+      }
+    }
+
+    await Product.findByIdAndUpdate(id, productObj, { new: true })
+      .then((productData) => {
+        return res.status(200).json({
+          status: 200,
+          message: "Product Updated successfully",
+          data: productData,
+        });
+      })
+      .catch((err) => {
+        console.log(err);
+        return res.status(422).json({ message: err });
+      });
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+module.exports = { getAllProduct, createProduct, editProduct };

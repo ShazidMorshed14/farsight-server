@@ -28,7 +28,6 @@ const productSchema = new mongoose.Schema(
     shape: {
       type: ObjectId,
       ref: "Shape",
-      required: true,
     },
     colors: [
       {

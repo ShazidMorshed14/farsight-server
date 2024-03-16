@@ -25,4 +25,12 @@ router.post(
   productControllers.createProduct
 );
 
+router.put(
+  "/update/:id",
+  isAuth,
+  isAdmin,
+  upload.any(),
+  productControllers.editProduct
+);
+
 module.exports = router;
