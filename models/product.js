@@ -32,20 +32,15 @@ const productSchema = new mongoose.Schema(
     colors: [
       {
         add_amount: { type: Number, default: 0 },
-        color_details: {
-          type: ObjectId,
-          ref: "Color",
-        },
+        color_name: { type: String, required: true },
+        color_value: { type: String, required: true },
         color_quantity: { type: Number, default: 0 },
       },
     ],
     supportedPowers: [
       {
         add_amount: { type: Number, default: 0 },
-        shape_details: {
-          type: ObjectId,
-          ref: "Power",
-        },
+        power_name: { type: String, required: true },
       },
     ],
     quantity: {
