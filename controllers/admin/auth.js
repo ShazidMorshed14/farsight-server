@@ -96,7 +96,16 @@ const getAllAdmins = async (req, res) => {
 
 const signup = async (req, res) => {
   try {
-    const { name, email, phone, image, password, role, designation } = req.body;
+    const {
+      name,
+      email,
+      phone,
+      image,
+      password,
+      role,
+      designation,
+      isPassResetReq,
+    } = req.body;
 
     await User.findOne({
       $or: [{ email: req.body.email, phone: req.body.phone }],
@@ -120,6 +129,7 @@ const signup = async (req, res) => {
             status: "active",
             user_weight: userWeight[role] ? userWeight[role] : 2,
             designation: designation ? designation : null,
+            isPassResetReq: isPassResetReq ? isPassResetReq : true,
           });
 
           user

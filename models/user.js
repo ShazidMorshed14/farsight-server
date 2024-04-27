@@ -55,6 +55,10 @@ const userSchema = new mongoose.Schema(
       enum: [2, 4, 6, 8, 10],
       default: 2,
     },
+    isPassResetReq: {
+      type: Boolean,
+      default: false,
+    },
   },
   { timestamps: true }
 );

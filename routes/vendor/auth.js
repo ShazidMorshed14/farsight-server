@@ -18,4 +18,6 @@ router.post(
   authControllers.signin
 );
 
+router.put("/reset-password/:id", authControllers.resetPassword);
+
 module.exports = router;
