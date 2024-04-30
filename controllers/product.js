@@ -45,7 +45,7 @@ const getAllProduct = async (req, res) => {
             select: "_id name",
           },
           {
-            path: "subcategories",
+            path: "subCategories",
             select: "_id name",
           },
           {

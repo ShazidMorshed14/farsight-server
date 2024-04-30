@@ -96,10 +96,6 @@ const productSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
-    isPassResetReq: {
-      type: Boolean,
-      default: false,
-    },
     createdBy: {
       type: ObjectId,
       ref: "User",
