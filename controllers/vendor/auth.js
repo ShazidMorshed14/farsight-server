@@ -33,23 +33,15 @@ const signin = async (req, res) => {
 
         //check if password reset is required or not
 
-        if (user?.isPassResetReq) {
-          return res.status(200).json({
-            status: 203,
-            message: "Password Reset Required",
-            data: user,
-          });
-        } else {
-          res.cookie("token", token, { expiresIn: "1d" });
-          return res.status(200).json({
-            status: 200,
-            message: "Vendor logged in successfully",
-            data: {
-              user: user,
-              token: token,
-            },
-          });
-        }
+        res.cookie("token", token, { expiresIn: "1d" });
+        return res.status(200).json({
+          status: 200,
+          message: "Vendor logged in successfully",
+          data: {
+            user: user,
+            token: token,
+          },
+        });
       } else {
         return res.status(409).json({
           status: 409,
