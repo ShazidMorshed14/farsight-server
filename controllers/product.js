@@ -289,4 +289,74 @@ const editProduct = async (req, res) => {
   }
 };
 
-module.exports = { getAllProduct, createProduct, editProduct };
+const productDetails = async (req, res) => {
+  try {
+    let { sku } = req.params;
+
+    const productDetails = await Product.findOne({ sku: sku }).populate([
+      {
+        path: "createdBy",
+        select: "_id name role",
+      },
+      {
+        path: "categories",
+        select: "_id name",
+      },
+      {
+        path: "subCategories",
+        select: "_id name",
+      },
+    ]);
+
+    if (!productDetails) {
+      return res.status(404).json({
+        message: `${MODEL_NAME} details couldn't found!`,
+      });
+    }
+
+    return res.status(200).json({
+      status: 200,
+      message: `${MODEL_NAME} details fetched successfully!`,
+      data: productDetails,
+    });
+  } catch (error) {
+    console.error(`Error fetching ${MODEL_NAME}:`, error);
+    return res.status(500).json({ meassge: `Error fetching ${MODEL_NAME}` });
+  }
+};
+
+const featuredProducts = async (req, res) => {
+  try {
+    const productList = await Product.find({ isFeatured: true }).populate([
+      {
+        path: "createdBy",
+        select: "_id name role",
+      },
+      {
+        path: "categories",
+        select: "_id name",
+      },
+      {
+        path: "subCategories",
+        select: "_id name",
+      },
+    ]);
+
+    return res.status(200).json({
+      status: 200,
+      message: `${MODEL_NAME} (featured) fetched successfully!`,
+      productList: productList,
+    });
+  } catch (error) {
+    console.error(`Error fetching ${MODEL_NAME}:`, error);
+    return res.status(500).json({ meassge: `Error fetching ${MODEL_NAME}` });
+  }
+};
+
+module.exports = {
+  getAllProduct,
+  createProduct,
+  editProduct,
+  productDetails,
+  featuredProducts,
+};

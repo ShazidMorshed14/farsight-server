@@ -15,6 +15,8 @@ const {
 } = require("../validators/product");
 
 router.get("/", productControllers.getAllProduct);
+router.get("/featured", productControllers.featuredProducts);
+router.get("/details/:sku", productControllers.productDetails);
 router.post(
   "/create",
   isAuth,

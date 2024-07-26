@@ -166,6 +166,10 @@ const signin = async (req, res) => {
     });
 
     if (user) {
+      if (user?.role !== "super_admin") {
+        return res.status(409).json({ message: "You are not an admin" });
+      }
+
       if (bcrypt.compareSync(req.body.password, user.password)) {
         //creating token with userId
         var token = jwt.sign(
