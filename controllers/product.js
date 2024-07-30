@@ -327,25 +327,34 @@ const productDetails = async (req, res) => {
 
 const featuredProducts = async (req, res) => {
   try {
-    const productList = await Product.find({ isFeatured: true }).populate([
-      {
-        path: "createdBy",
-        select: "_id name role",
-      },
-      {
-        path: "categories",
-        select: "_id name",
-      },
-      {
-        path: "subCategories",
-        select: "_id name",
-      },
-    ]);
+    let totalCount = 0;
+
+    const productList = await Product.find({ isFeatured: true })
+      .populate([
+        {
+          path: "createdBy",
+          select: "_id name role",
+        },
+        {
+          path: "categories",
+          select: "_id name",
+        },
+        {
+          path: "subCategories",
+          select: "_id name",
+        },
+      ])
+      .sort({ _id: -1 });
+
+    totalCount = productList.length;
 
     return res.status(200).json({
       status: 200,
       message: `${MODEL_NAME} (featured) fetched successfully!`,
-      productList: productList,
+      data: {
+        products: productList,
+        total: totalCount,
+      },
     });
   } catch (error) {
     console.error(`Error fetching ${MODEL_NAME}:`, error);
