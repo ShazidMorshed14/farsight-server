@@ -49,7 +49,7 @@ const getAllProduct = async (req, res) => {
             select: "_id name",
           },
           {
-            path: "colors",
+            path: "colors.color",
             select: "_id name value",
           },
           {
@@ -91,7 +91,7 @@ const getAllProduct = async (req, res) => {
             path: "subCategories",
           },
           {
-            path: "colors",
+            path: "colors.color",
           },
           {
             path: "shape",
@@ -342,6 +342,10 @@ const featuredProducts = async (req, res) => {
         {
           path: "subCategories",
           select: "_id name",
+        },
+        {
+          path: "colors.color",
+          select: "_id name value",
         },
       ])
       .sort({ _id: -1 });

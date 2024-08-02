@@ -29,10 +29,15 @@ const productSchema = new mongoose.Schema(
       type: ObjectId,
       ref: "Shape",
     },
+    brand: {
+      type: ObjectId,
+      ref: "Brand",
+      default: null,
+    },
     colors: [
       {
         add_amount: { type: Number, default: 0 },
-        color: { type: String, required: true },
+        color: { type: ObjectId, ref: "Color", required: true },
         color_quantity: { type: Number, default: 1 },
       },
     ],
