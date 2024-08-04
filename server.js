@@ -46,6 +46,7 @@ const cartRoutes = require("./routes/cart");
 const powerRoutes = require("./routes/power");
 const colorRoutes = require("./routes/color");
 const shapeRoutes = require("./routes/shape");
+const brandRoutes = require("./routes/brand");
 
 //importing the file upload controller
 const fileUploader = require("./controllers/file-upload");
@@ -61,6 +62,7 @@ app.use("/api/v1/user/cart", cartRoutes);
 app.use("/api/v1/vendor/auth", vendorAuthRoutes);
 app.use("/api/v1/power", powerRoutes);
 app.use("/api/v1/color", colorRoutes);
+app.use("/api/v1/brand", brandRoutes);
 app.use("/api/v1/shape", shapeRoutes);
 app.use("/api/v1/vendor/user", vendorUserRoutes);
 

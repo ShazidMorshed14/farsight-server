@@ -53,6 +53,10 @@ const getAllProduct = async (req, res) => {
             select: "_id name value",
           },
           {
+            path: "brand",
+            select: "_id name",
+          },
+          {
             path: "shape",
             select: "_id name ",
           },
@@ -92,6 +96,10 @@ const getAllProduct = async (req, res) => {
           },
           {
             path: "colors.color",
+          },
+          {
+            path: "brand",
+            select: "_id name",
           },
           {
             path: "shape",
@@ -138,6 +146,7 @@ const createProduct = async (req, res) => {
       offer_type,
       status,
       isFeatured,
+      brand,
     } = req.body;
 
     const productObj = {
@@ -158,6 +167,7 @@ const createProduct = async (req, res) => {
       createdBy: req.user._id,
       status: status ? status : "active",
       isFeatured: isFeatured ? isFeatured : false,
+      brand: brand ? brand : null,
     };
 
     const isProductExists = await Product.findOne({ slug: slugify(name) });
@@ -306,6 +316,14 @@ const productDetails = async (req, res) => {
         path: "subCategories",
         select: "_id name",
       },
+      {
+        path: "colors.color",
+        select: "_id name value",
+      },
+      {
+        path: "brand",
+        select: "_id name",
+      },
     ]);
 
     if (!productDetails) {
@@ -346,6 +364,10 @@ const featuredProducts = async (req, res) => {
         {
           path: "colors.color",
           select: "_id name value",
+        },
+        {
+          path: "brand",
+          select: "_id name",
         },
       ])
       .sort({ _id: -1 });
