@@ -36,6 +36,7 @@ const adminUserRoutes = require("./routes/admin/users");
 //vendor routes
 const vendorAuthRoutes = require("./routes/vendor/auth");
 const vendorUserRoutes = require("./routes/vendor/users");
+const vendorOrderRoutes = require("./routes/vendor/order");
 
 //other routes
 const authRoutes = require("./routes/auth");
@@ -65,6 +66,7 @@ app.use("/api/v1/color", colorRoutes);
 app.use("/api/v1/brand", brandRoutes);
 app.use("/api/v1/shape", shapeRoutes);
 app.use("/api/v1/vendor/user", vendorUserRoutes);
+app.use("/api/v1/vendor/order", vendorOrderRoutes);
 
 app.post(
   "/api/v1/files/upload",
