@@ -24,15 +24,20 @@ const orderSchema = new mongoose.Schema(
       required: true,
       default: 0,
     },
-    total_dicounted_bill: {
+    total_discounted_bill: {
       type: Number,
       required: true,
       default: 0,
+    },
+    delivery_address: {
+      type: String,
     },
     ordered_products: [
       {
         quantity: { type: Number, default: 0 },
         variant: { type: ObjectId, ref: "Color", required: true },
+        product_unit_price: { type: Number, default: 0, required: true },
+        product_discount: { type: Number, default: 0 },
         product_total_price: { type: Number, default: 0, required: true },
         product_discounted_price: { type: Number, default: 0, required: true },
         productId: { type: ObjectId, ref: "Product", required: true },
@@ -50,7 +55,7 @@ const orderSchema = new mongoose.Schema(
     },
     online_scource_type: {
       type: String,
-      enum: ["BKASH", "NAGAD", "ROCKET"],
+      enum: ["BKASH", "NAGAD", "ROCKET", null],
       default: null,
     },
     trx_no: {

@@ -20,11 +20,12 @@ const placeOrder = async (req, res) => {
     const {
       ordered_products,
       total_bill,
-      total_dicounted_bill,
+      total_discounted_bill,
       payment_method,
       card_no,
       online_scource_type,
       trx_no,
+      delivery_address,
     } = req.body;
 
     const currentUser = req.user;
@@ -49,26 +50,34 @@ const placeOrder = async (req, res) => {
       const product = await Product.findById(productId).session(session);
 
       if (!product) {
-        throw new Error(`Product with ID ${productId} not found`);
+        return res.status(404).json({
+          status: 404,
+          message: `Product couldn't found!`,
+          data: null,
+        });
       }
 
       // Find the variant (color) in the product's colors list
       const colorIndex = product.colors.findIndex(
-        (colorItem) => colorItem._id.toString() === variant
+        (colorItem) => colorItem.color.toString() === variant
       );
 
       if (colorIndex === -1) {
-        throw new Error(
-          `Variant (color) with ID ${variant} not found in product ${productId}`
-        );
+        return res.status(404).json({
+          status: 404,
+          message: `Variant (color) with ID ${variant} not found in product ${productId}`,
+          data: null,
+        });
       }
 
       // Check if there's enough quantity for the variant
       const selectedColor = product.colors[colorIndex];
       if (selectedColor.color_quantity < quantity) {
-        throw new Error(
-          `Insufficient stock for variant ${variant} in product ${productId}`
-        );
+        return res.status(404).json({
+          status: 404,
+          message: `Insufficient stock for variant ${variant} in product ${productId}`,
+          data: null,
+        });
       }
 
       // Store previous quantity for rollback
@@ -91,13 +100,14 @@ const placeOrder = async (req, res) => {
       receipt_no: receipt_no,
       user_id: currentUser?._id,
       total_bill: total_bill ?? 0,
-      total_dicounted_bill: total_dicounted_bill ?? 0,
+      total_discounted_bill: total_discounted_bill ?? 0,
       ordered_products: ordered_products,
       payment_method: payment_method ?? "COD",
       card_no: card_no ?? null,
       online_scource_type: online_scource_type ?? null,
       trx_no: trx_no ?? null,
       order_status: "PENDING",
+      delivery_address: delivery_address ?? null,
     });
 
     // Save the new order (with session for transaction)
