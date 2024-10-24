@@ -41,7 +41,7 @@ const isAdmin = (req, res, next) => {
   if (req?.user?.role === "admin" || req?.user?.role === "super_admin") {
     return next();
   } else {
-    return res.status(409).json({ message: "Access Denied" });
+    return res.status(409).json({ message: "Access Denied! Not an admin" });
   }
 };
 

@@ -32,6 +32,10 @@ const orderSchema = new mongoose.Schema(
     delivery_address: {
       type: String,
     },
+    contact_no: {
+      type: String,
+      required: true,
+    },
     ordered_products: [
       {
         quantity: { type: Number, default: 0 },

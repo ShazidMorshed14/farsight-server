@@ -32,6 +32,7 @@ const connecDB = require("./db/connect");
 //admin routes
 const adminAuthRoutes = require("./routes/admin/auth");
 const adminUserRoutes = require("./routes/admin/users");
+const adminOrderRoutes = require("./routes/admin/order");
 
 //vendor routes
 const vendorAuthRoutes = require("./routes/vendor/auth");
@@ -55,6 +56,7 @@ const { isAuth, isAdmin } = require("./middlewares/auth");
 
 app.use("/api/v1/admin/auth", adminAuthRoutes);
 app.use("/api/v1/admin/users", adminUserRoutes);
+app.use("/api/v1/admin/order", adminOrderRoutes);
 app.use("/api/v1/customer/auth", authRoutes);
 app.use("/api/v1/category", categoryRoutes);
 app.use("/api/v1/subcategory", SubCategoryRoutes);

@@ -5,6 +5,7 @@ const router = express.Router();
 //importing the controllers
 const vendorOrderController = require("../../controllers/vendor/order");
 
-router.post("/", isAuth, vendorOrderController.placeOrder);
+router.post("/", isAuth, isVendor, vendorOrderController.placeOrder);
+router.get("/", isAuth, isVendor, vendorOrderController.getOrders);
 
 module.exports = router;

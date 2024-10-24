@@ -158,23 +158,120 @@ const placeOrder = async (req, res) => {
 
 const getOrders = async (req, res) => {
   try {
-    const currentUser = req.user;
-    if (!currentUser) {
-      return res.status(400).json({ meassge: "No Specific User found!" });
+    let {
+      page,
+      pageSize,
+      pageLess,
+      search,
+      order_status,
+      user_id,
+      start_date,
+      end_date,
+    } = req.query;
+
+    page = page ? parseInt(page) : 1;
+    pageSize = pageSize ? parseInt(pageSize) : 10;
+
+    let query = {};
+    let totalCount = 0;
+
+    if (search) {
+      query.$or = [
+        { order_no: { $regex: search, $options: "i" } },
+        { receipt_no: { $regex: search, $options: "i" } },
+      ];
     }
 
-    const orders = await Order.find({
-      user_id: currentUser._id,
-    }).sort({ _id: -1 });
+    if (user_id) {
+      query.user_id = user_id;
+    }
 
-    return res.status(200).json({
-      status: 200,
-      message: `${MODEL_NAME} fetched successfully`,
-      data: orders,
-    });
+    if (order_status) {
+      query.order_status = order_status;
+    }
+
+    // Date range filtering
+    if (start_date || end_date) {
+      let startDate = start_date ? new Date(start_date) : null;
+      let endDate = end_date ? new Date(end_date) : new Date(); // If end_date is not provided, use today's date
+
+      query.createdAt = {};
+
+      if (startDate) {
+        query.createdAt.$gte = startDate; // Filter from start_date
+      }
+
+      if (endDate) {
+        // Ensure the endDate includes the entire day by setting time to the end of the day
+        endDate.setHours(23, 59, 59, 999);
+        query.createdAt.$lte = endDate; // Filter until end_date
+      }
+    }
+
+    if (pageLess) {
+      // If pageLess is true, return all patients
+      const orders = await Order.find(query)
+        .populate([
+          {
+            path: "user_id",
+            select: "_id name role email",
+          },
+          {
+            path: "ordered_products.productId",
+          },
+          {
+            path: "ordered_products.variant",
+          },
+        ])
+        .sort({ _id: -1 });
+      totalCount = orders.length;
+
+      if (pageLess !== undefined && pageLess === "true") {
+        return res.status(200).json({
+          status: 200,
+          message: "Orders fetched successfully!",
+          data: {
+            orders: orders,
+            total: totalCount,
+          },
+        });
+      }
+    } else {
+      // If pageLess is false or not provided, apply pagination
+      const skip = (parseInt(page) - 1) * parseInt(pageSize);
+      const limit = parseInt(pageSize);
+
+      const paginatedOrders = await Order.find(query)
+        .populate([
+          {
+            path: "user_id",
+            select: "_id name role email",
+          },
+          {
+            path: "ordered_products.productId",
+          },
+          {
+            path: "ordered_products.variant",
+          },
+        ])
+        .sort({ _id: -1 })
+        .skip(skip)
+        .limit(limit);
+
+      totalCount = await Order.countDocuments(query);
+
+      return res.status(200).json({
+        status: 200,
+        message: `${MODEL_NAME} fetched successfully!`,
+        data: {
+          orders: paginatedOrders,
+          total: totalCount,
+        },
+      });
+    }
   } catch (error) {
-    console.error("Error fetching orders:", error);
-    return res.status(500).json({ meassge: "Error fetching brand" });
+    console.error(`Error fetching ${MODEL_NAME}:`, error);
+    return res.status(500).json({ meassge: `Error fetching ${MODEL_NAME}` });
   }
 };
 
