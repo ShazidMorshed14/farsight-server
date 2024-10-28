@@ -282,7 +282,7 @@ const getOrderDetails = async (req, res) => {
     const orderDetails = await Order.findOne({ order_no: orderNo }).populate([
       {
         path: "user_id",
-        select: "_id name role email",
+        select: "_id name role email phone",
       },
       {
         path: "ordered_products.productId",
@@ -305,4 +305,42 @@ const getOrderDetails = async (req, res) => {
   }
 };
 
-module.exports = { placeOrder, getOrders, getOrderDetails };
+const updateOrder = async (req, res) => {
+  try {
+    let { orderId } = req.params;
+
+    const orderDetails = await Order.findById(orderId);
+
+    if (
+      orderDetails != null &&
+      orderDetails.order_status != req.body.order_status
+    ) {
+      let currentOrderHistory = orderDetails.order_life_history ?? [];
+      let userName = req.user.name ?? "N/A";
+      let userPhone = req.user.phone ?? "N/A";
+      let newOrderStatus = req.body.order_status ?? "N/A";
+      let newLabel = `Order status changed to ${newOrderStatus}`;
+      let newDesc = `${userName}(${userPhone}) ${newOrderStatus} the order`;
+      currentOrderHistory.push({ label: newLabel, description: newDesc });
+      req.body.order_life_history = currentOrderHistory ?? [];
+    }
+
+    await Order.findByIdAndUpdate(orderId, req.body, { new: true })
+      .then((orderData) => {
+        return res.status(200).json({
+          status: 200,
+          message: "Order Updated successfully",
+          data: orderData,
+        });
+      })
+      .catch((err) => {
+        console.log(err);
+        return res.status(422).json({ message: err });
+      });
+  } catch (error) {
+    console.error(`Error editing ${MODEL_NAME}:`, error);
+    return res.status(500).json({ meassge: `Error editing ${MODEL_NAME}` });
+  }
+};
+
+module.exports = { placeOrder, getOrders, getOrderDetails, updateOrder };

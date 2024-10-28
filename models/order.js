@@ -79,6 +79,36 @@ const orderSchema = new mongoose.Schema(
       ],
       default: "PENDING",
     },
+    apx_delivery_date: {
+      type: Date,
+      default: null,
+    },
+    delivery_date: {
+      type: Date,
+      default: null,
+    },
+    shipping_medium: {
+      type: String,
+      default: null,
+    },
+    shipping_info: {
+      type: String,
+      default: null,
+    },
+    return_cause: {
+      type: String,
+      default: null,
+    },
+    presc_image: {
+      type: String,
+      default: null,
+    },
+    order_life_history: [
+      {
+        label: { type: String },
+        description: { type: String },
+      },
+    ],
   },
   { timestamps: true }
 );

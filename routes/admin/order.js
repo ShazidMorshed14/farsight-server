@@ -8,5 +8,6 @@ const adminOrderController = require("../../controllers/admin/order");
 router.post("/", isAuth, isAdmin, adminOrderController.placeOrder);
 router.get("/", isAuth, isAdmin, adminOrderController.getOrders);
 router.get("/:orderNo", isAuth, isAdmin, adminOrderController.getOrderDetails);
+router.put("/:orderId", isAuth, isAdmin, adminOrderController.updateOrder);
 
 module.exports = router;
