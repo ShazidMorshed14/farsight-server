@@ -38,6 +38,7 @@ const adminOrderRoutes = require("./routes/admin/order");
 const vendorAuthRoutes = require("./routes/vendor/auth");
 const vendorUserRoutes = require("./routes/vendor/users");
 const vendorOrderRoutes = require("./routes/vendor/order");
+const vendorProductRoutes = require("./routes/vendor/product");
 
 //other routes
 const authRoutes = require("./routes/auth");
@@ -69,6 +70,7 @@ app.use("/api/v1/brand", brandRoutes);
 app.use("/api/v1/shape", shapeRoutes);
 app.use("/api/v1/vendor/user", vendorUserRoutes);
 app.use("/api/v1/vendor/order", vendorOrderRoutes);
+app.use("/api/v1/vendor/product", vendorProductRoutes);
 
 app.post(
   "/api/v1/files/upload",
