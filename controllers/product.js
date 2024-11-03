@@ -9,7 +9,19 @@ const MODEL_NAME = "Product";
 
 const getAllProduct = async (req, res) => {
   try {
-    let { page, pageSize, pageLess, name, sku, status, category } = req.query;
+    let {
+      page,
+      pageSize,
+      pageLess,
+      search,
+      status,
+      category,
+      subCategory,
+      brand,
+      shape,
+      color,
+      isFeatured,
+    } = req.query;
 
     page = page ? parseInt(page) : 1;
     pageSize = pageSize ? parseInt(pageSize) : 10;
@@ -17,96 +29,74 @@ const getAllProduct = async (req, res) => {
     let query = {};
     let totalCount = 0;
 
-    if (name) {
-      query.name = { $regex: name, $options: "i" };
+    // Filters
+    // Search in both `name` and `sku` fields
+    if (search) {
+      query.$or = [
+        { name: { $regex: search, $options: "i" } },
+        { sku: { $regex: search, $options: "i" } },
+      ];
     }
-
-    if (sku) {
-      query.sku = { $regex: sku, $options: "i" };
-    }
-
     if (status) {
       query.status = { $regex: status, $options: "i" };
     }
     if (category) {
-      query.category = category;
+      query.categories = {
+        $in: Array.isArray(category) ? category : [category],
+      };
+    }
+    if (subCategory) {
+      query.subCategories = {
+        $in: Array.isArray(subCategory) ? subCategory : [subCategory],
+      };
+    }
+    if (brand) {
+      query.brand = brand;
+    }
+    if (shape) {
+      query.shape = shape;
+    }
+    if (color) {
+      query["colors.color"] = color;
+    }
+    if (isFeatured !== undefined) {
+      query.isFeatured = isFeatured === "true";
     }
 
+    // Conditional pagination
     if (pageLess) {
-      // If pageLess is true, return all patients
       const products = await Product.find(query)
         .populate([
-          {
-            path: "createdBy",
-            select: "_id name role",
-          },
-          {
-            path: "categories",
-            select: "_id name",
-          },
-          {
-            path: "subCategories",
-            select: "_id name",
-          },
-          {
-            path: "colors.color",
-            select: "_id name value",
-          },
-          {
-            path: "brand",
-            select: "_id name",
-          },
-          {
-            path: "shape",
-            select: "_id name ",
-          },
-          {
-            path: "reviews",
-          },
+          { path: "createdBy", select: "_id name role" },
+          { path: "categories", select: "_id name" },
+          { path: "subCategories", select: "_id name" },
+          { path: "colors.color", select: "_id name value" },
+          { path: "brand", select: "_id name" },
+          { path: "shape", select: "_id name" },
+          { path: "reviews" },
         ])
         .sort({ _id: -1 });
+
       totalCount = products.length;
 
-      if (pageLess !== undefined && pageLess === "true") {
-        return res.status(200).json({
-          status: 200,
-          message: "Products fetched successfully!",
-          data: {
-            products: products,
-            total: totalCount,
-          },
-        });
-      }
+      return res.status(200).json({
+        status: 200,
+        message: "Products fetched successfully!",
+        data: { products, total: totalCount },
+      });
     } else {
-      // If pageLess is false or not provided, apply pagination
-      const skip = (parseInt(page) - 1) * parseInt(pageSize);
-      const limit = parseInt(pageSize);
+      const skip = (page - 1) * pageSize;
+      const limit = pageSize;
 
       const paginatedProducts = await Product.find(query)
         .populate([
-          {
-            path: "createdBy",
-            select: "_id name role",
-          },
-          {
-            path: "categories",
-          },
-          {
-            path: "subCategories",
-          },
-          {
-            path: "colors.color",
-          },
-          {
-            path: "brand",
-            select: "_id name",
-          },
-          {
-            path: "shape",
-          },
-          {
-            path: "reviews",
-          },
+          { path: "createdBy", select: "_id name role" },
+          { path: "categories", select: "_id name" },
+          { path: "subCategories", select: "_id name" },
+          { path: "colors.color", select: "_id name value" },
+          { path: "brand", select: "_id name" },
+          { path: "shape", select: "_id name" },
+          { path: "reviews" },
         ])
         .sort({ _id: -1 })
         .skip(skip)
@@ -116,16 +106,13 @@ const getAllProduct = async (req, res) => {
 
       return res.status(200).json({
         status: 200,
-        message: `${MODEL_NAME} fetched successfully!`,
-        data: {
-          products: paginatedProducts,
-          total: totalCount,
-        },
+        message: "Products fetched successfully!",
+        data: { products: paginatedProducts, total: totalCount },
       });
     }
   } catch (error) {
-    console.error(`Error fetching ${MODEL_NAME}:`, error);
-    return res.status(500).json({ meassge: `Error fetching ${MODEL_NAME}` });
+    console.error("Error fetching products:", error);
+    return res.status(500).json({ message: "Error fetching products" });
   }
 };
 

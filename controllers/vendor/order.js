@@ -165,7 +165,20 @@ const getOrders = async (req, res) => {
 
     const orders = await Order.find({
       user_id: currentUser._id,
-    }).sort({ _id: -1 });
+    })
+      .populate([
+        {
+          path: "user_id",
+          select: "_id name role email",
+        },
+        {
+          path: "ordered_products.productId",
+        },
+        {
+          path: "ordered_products.variant",
+        },
+      ])
+      .sort({ _id: -1 });
 
     return res.status(200).json({
       status: 200,
@@ -178,4 +191,34 @@ const getOrders = async (req, res) => {
   }
 };
 
-module.exports = { placeOrder, getOrders };
+const getOrderDetails = async (req, res) => {
+  try {
+    let { orderNo } = req.params;
+
+    const orderDetails = await Order.findOne({ order_no: orderNo }).populate([
+      {
+        path: "user_id",
+        select: "_id name role email phone",
+      },
+      {
+        path: "ordered_products.productId",
+      },
+      {
+        path: "ordered_products.variant",
+      },
+    ]);
+
+    return res.status(200).json({
+      status: 200,
+      message: `${MODEL_NAME} fetched successfully!`,
+      data: orderDetails,
+    });
+  } catch (error) {
+    console.error(`Error fetching ${MODEL_NAME} details:`, error);
+    return res
+      .status(500)
+      .json({ meassge: `Error fetching ${MODEL_NAME} details` });
+  }
+};
+
+module.exports = { placeOrder, getOrders, getOrderDetails };

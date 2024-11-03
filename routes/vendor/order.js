@@ -7,5 +7,11 @@ const vendorOrderController = require("../../controllers/vendor/order");
 
 router.post("/", isAuth, isVendor, vendorOrderController.placeOrder);
 router.get("/", isAuth, isVendor, vendorOrderController.getOrders);
+router.get(
+  "/:orderNo",
+  isAuth,
+  isVendor,
+  vendorOrderController.getOrderDetails
+);
 
 module.exports = router;
