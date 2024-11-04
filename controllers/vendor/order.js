@@ -95,6 +95,12 @@ const placeOrder = async (req, res) => {
       await product.save({ session });
     }
 
+    // Calculate the approximate delivery date (3 days after current date)
+    const currentDate = new Date();
+    const apx_delivery_date = new Date(
+      currentDate.setDate(currentDate.getDate() + 3)
+    );
+
     // If all stock updates succeed, proceed to place the order
     const newOrder = new Order({
       order_no: order_no,
@@ -110,6 +116,7 @@ const placeOrder = async (req, res) => {
       order_status: "PENDING",
       delivery_address: delivery_address ?? null,
       contact_no: contact_no ?? null,
+      apx_delivery_date: apx_delivery_date ?? null,
     });
 
     // Save the new order (with session for transaction)
