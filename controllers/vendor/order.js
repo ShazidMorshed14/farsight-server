@@ -27,6 +27,7 @@ const placeOrder = async (req, res) => {
       trx_no,
       delivery_address,
       contact_no,
+      customer_name,
     } = req.body;
 
     const currentUser = req.user;
@@ -116,6 +117,7 @@ const placeOrder = async (req, res) => {
       order_status: "PENDING",
       delivery_address: delivery_address ?? null,
       contact_no: contact_no ?? null,
+      customer_name: customer_name ?? null,
       apx_delivery_date: apx_delivery_date ?? null,
     });
 

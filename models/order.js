@@ -36,6 +36,9 @@ const orderSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    customer_name: {
+      type: String,
+    },
     ordered_products: [
       {
         quantity: { type: Number, default: 0 },
