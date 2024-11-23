@@ -336,26 +336,13 @@ const featuredProducts = async (req, res) => {
 
     const productList = await Product.find({ isFeatured: true })
       .populate([
-        {
-          path: "createdBy",
-          select: "_id name role",
-        },
-        {
-          path: "categories",
-          select: "_id name",
-        },
-        {
-          path: "subCategories",
-          select: "_id name",
-        },
-        {
-          path: "colors.color",
-          select: "_id name value",
-        },
-        {
-          path: "brand",
-          select: "_id name",
-        },
+        { path: "createdBy", select: "_id name role" },
+        { path: "categories", select: "_id name" },
+        { path: "subCategories", select: "_id name" },
+        { path: "colors.color", select: "_id name value" },
+        { path: "brand", select: "_id name" },
+        { path: "shape", select: "_id name" },
+        { path: "reviews" },
       ])
       .sort({ _id: -1 });
 
